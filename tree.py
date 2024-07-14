@@ -91,11 +91,17 @@ class Tree:
     #     else:
     #         return str(self.label)
 
-    def add_subtree(self, subtree):
+    def add_child(self, child):
         """
         Add given subtree as the last child of this tree.
         """
-        self.children.append(subtree)
+        self.children.append(child)
+
+    def insert(self, pos, child):
+        """
+        Add given subtree in given position.
+        """
+        self.children.insert(pos, child)
 
     def size(self):
         """
@@ -103,12 +109,12 @@ class Tree:
         """
         return 1 + sum(c.size() for c in self.children)
 
-    def yld(self):
+    def yld(self, sep=' '):
         """
         Return the string formed by concatenating all leaf nodes in the tree.
         """
         if len(self.children) > 0:
-            return ''.join(c.yld() for c in self.children)
+            return ' '.join(c.yld() for c in self.children)
         else:
             return self.label
 
@@ -167,7 +173,10 @@ if __name__ == "__main__":
     # print(t)
     # t = Tree.from_list(['a', ['b', ['c', 'd'], 'e']])
     # print(t)
-    t = Tree.from_string("(a (b (c)) (d (e (f) g) (h)))")
+    s = "(a (b (c)) (d (e (f) (g)) (h)))"
+    t = Tree.from_string(s)
     # print(t)
-    for e in t.traverse():
-        print(e.label)
+    # for e in t.traverse():
+    #     print(e.label)
+    print(str(t) == s)
+    "(a (b (c)) (d (e (f) (g)) (h)))"
