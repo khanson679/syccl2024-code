@@ -1,8 +1,9 @@
+import re
 from tree import Tree
 
 
 class TreeGrammar:
-    def __init__(self, start=None, rules=None, terminals=None, any_terminal=False):
+    def __init__(self, start=None, rules=None, terminals=None):
         """
         Contruct grammar from list of tuples of form (parent, children).
         """
@@ -27,8 +28,8 @@ class TreeGrammar:
         for symb in terminals:
             self.add_rule(symb, [])
 
-    def set_any_terminal(self, flag=True):
-        self.any_terminal = flag
+    # def set_any_terminal(self, flag=True):
+    #     self.any_terminal = flag
 
     def recognize(self, tree, debug=False):
         """
@@ -41,15 +42,27 @@ class TreeGrammar:
             parent_label = node.label
             child_labels = tuple(c.label for c in node.children)
             for rule in self.rules:
-                if self.any_terminal and not child_labels:
-                    match = True
-                    break
-                if (parent_label, child_labels) == rule:
+                # if self.any_terminal and not child_labels:
+                #     match = True
+                #     break
+                if self._match_subtree(rule, parent_label, child_labels):
                     match = True
                     break
             if not match:
                 if debug:
                     print(f"bad subtree: ({parent_label}, {child_labels})")
+                return False
+        return True
+
+    @staticmethod
+    def _match_subtree(rule, parent_label, child_labels):
+        rule_label, rule_children = rule
+        if not re.match(rule_label, parent_label):
+            return False
+        if len(child_labels) != len(rule_children):
+            return False
+        for c, rc in zip(child_labels, rule_children):
+            if not re.match(rc, c):
                 return False
         return True
 
@@ -63,9 +76,8 @@ if __name__ == "__main__":
     g1.add_rule('VP', ['V-int'])
     g1.add_rule('VP', ['V-tr', 'NP'])
     g1.add_rule('D', ['the'])
-    g1.add_rule('N', ['cat'])
-    g1.add_rule('N', ['rat'])
-    g1.add_rule('V-int', ['sat'])
+    g1.add_rule('N', ['cat|rat'])
+    g1.add_rule('V-int', ['sat|flew'])
     g1.add_rule('V-tr', ['chased'])
     g1.add_terminals(['the', 'cat', 'rat', 'sat', 'chased'])
     # g1.set_any_terminal(True)
