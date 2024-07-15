@@ -44,13 +44,12 @@ class TreeGrammar:
                 if self.any_terminal and not child_labels:
                     match = True
                     break
-                children = tuple(c.label for c in node.children)
-                if (parent_label, children) == rule:
+                if (parent_label, child_labels) == rule:
                     match = True
                     break
             if not match:
                 if debug:
-                    print(f"bad subtree: ({node.label}, {child_labels})")
+                    print(f"bad subtree: ({parent_label}, {child_labels})")
                 return False
         return True
 
