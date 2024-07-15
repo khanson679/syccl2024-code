@@ -14,7 +14,7 @@ class TreeGrammar:
                 rules.append((parent, tuple(children)))
         if terminals:
             self.add_terminals(terminals)
-        self.any_terminal=False
+        self.any_terminal = False
 
     def set_start(self, start):
         self.start = start
